@@ -1,0 +1,38 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+variables:
+  BuildConfiguration: 'Release'
+
+steps:
+- powershell: ./build.ps1 $(BuildConfiguration)
+  displayName: 'Build Wordpress Modules (Patches, Must Use Plugins, Plugins, Themes): $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Wordpress Server'
+  inputs:
+    command: build
+    projects: '**/Server/**/*.csproj'
+    feedsToUse: config
+    nugetConfigPath: NuGet.config    # Relative to root of the repository
+    #externalFeedCredentials: <Name of the NuGet service connection>
+
+# Build Artifacts
+- task: DotNetCoreCLI@2
+  displayName: 'Build Artifacts'
+  inputs:
+    command: publish
+    projects: '**/Server/**/*.csproj'
+    publishWebProjects: False
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
+
+# Publish Build Artifacts
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  displayName: 'Pubilsh Build Artifacts'

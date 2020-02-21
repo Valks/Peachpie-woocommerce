@@ -1,0 +1,57 @@
+﻿<Project Sdk="Peachpie.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Plugin.Wordpress.Plugins.WooCommerce</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PeachPied.WordPress" Version="$(WpDotNetVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="**/*.php"
+             Exclude="obj/**;
+                      bin/**;
+                      **/PHPUnit/**;
+                      **/Tests/**;
+                      wp-content/plugins/woocommerce/.*/**;
+                      wp-content/plugins/woocommerce/node_modules/**;
+                      wp-content/plugins/woocommerce/tests/**;
+                      wp-content/plugins/woocommerce/vendor/automattic/jetpack-autoloader/**;
+                      wp-content/plugins/woocommerce/vendor/composer/installers/**;
+                      
+                      wp-content/plugins/woocommerce/packages/woocommerce-admin/vendor/automattic/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-admin/vendor/composer/installers/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-blocks/vendor/automattic/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-blocks/vendor/composer/installers/**;" />
+    <Content Include="**"
+             Exclude="obj/**;
+                      bin/**;
+                      *.msbuildproj;
+                      **/PHPUnit/**;
+                      **/Tests/**;
+                      wp-content/plugins/woocommerce/.*/**;
+                      wp-content/plugins/woocommerce/node_modules/**;
+                      wp-content/plugins/woocommerce/tests/**;
+                      wp-content/plugins/woocommerce/*.yml;
+                      wp-content/plugins/woocommerce/.*;
+                      wp-content/plugins/woocommerce/*.yaml;
+                      wp-content/plugins/woocommerce/Dockerfile;
+                      wp-content/plugins/woocommerce/*.xml;
+                      wp-content/plugins/woocommerce/babel*;
+                      wp-content/plugins/woocommerce/composer.*;
+                      wp-content/plugins/woocommerce/Gruntfile.js;
+                      wp-content/plugins/woocommerce/package*.json;
+                      wp-content/plugins/woocommerce/vendor/automattic/jetpack-autoloader/**;
+                      wp-content/plugins/woocommerce/vendor/composer/installers/**;
+                      
+                      wp-content/plugins/woocommerce/packages/woocommerce-admin/vendor/automattic/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-admin/vendor/composer/installers/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-blocks/vendor/automattic/**;
+                      wp-content/plugins/woocommerce/packages/woocommerce-blocks/vendor/composer/installers/**;"
+             CopyToOutputDirectory="PreserveNewest">
+      <PackagePath>contentFiles/any/netcoreapp2.1/wordpress/</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+</Project>

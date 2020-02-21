@@ -1,0 +1,24 @@
+﻿<Project Sdk="Peachpie.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>library</OutputType>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Plugin.Wordpress.MustUsePlugin.PerformanceCounter</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PeachPied.WordPress" Version="$(WpDotNetVersion)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="**/*.php"
+             Exclude="obj/**;
+                      bin/**;" />
+    <Content Include="**"
+             Exclude="obj/**;
+                      bin/**;
+                      .msbuildproj"
+             CopyToOutputDirectory="PreserveNewest">
+      <PackagePath>contentFiles/any/netcoreapp2.1/wordpress/</PackagePath>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <Link>wordpress\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
+  </ItemGroup>
+</Project>

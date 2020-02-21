@@ -266,3 +266,4 @@ __pycache__/
 **/themecheck
 /src/Server/Properties
 /.vscode/settings.json
+appsettings.Production.json

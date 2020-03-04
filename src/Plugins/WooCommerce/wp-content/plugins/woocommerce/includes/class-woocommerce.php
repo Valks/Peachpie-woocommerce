@@ -6,8 +6,6 @@
  * @since   3.2.0
  */
 
-use Automattic\Jetpack\Constants;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -22,7 +20,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $version = '4.0.0';
+	public $version = '3.9.2';
 
 	/**
 	 * The single instance of the class.
@@ -299,11 +297,11 @@ final class WooCommerce {
 			case 'admin':
 				return is_admin();
 			case 'ajax':
-				return Constants::is_defined( 'DOING_AJAX' );
+				return defined( 'DOING_AJAX' );
 			case 'cron':
-				return Constants::is_defined( 'DOING_CRON' );
+				return defined( 'DOING_CRON' );
 			case 'frontend':
-				return ( ! is_admin() || Constants::is_defined( 'DOING_AJAX' ) ) && ! Constants::is_defined( 'DOING_CRON' ) && ! $this->is_rest_api_request();
+				return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! $this->is_rest_api_request();
 		}
 	}
 
@@ -448,11 +446,11 @@ final class WooCommerce {
 		include_once WC_ABSPATH . 'includes/wccom-site/class-wc-wccom-site.php';
 
 		/**
-		 * Libraries and packages.
+		 * Libraries
 		 */
-		include_once WC_ABSPATH . 'packages/action-scheduler/action-scheduler.php';
+		include_once WC_ABSPATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
-		if ( Constants::is_true( 'WP_CLI' ) ) {
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			include_once WC_ABSPATH . 'includes/class-wc-cli.php';
 		}
 

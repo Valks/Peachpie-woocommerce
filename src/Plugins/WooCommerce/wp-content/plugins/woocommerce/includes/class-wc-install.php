@@ -6,8 +6,6 @@
  * @version 3.0.0
  */
 
-use Automattic\Jetpack\Constants;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -142,11 +140,6 @@ class WC_Install {
 			'wc_update_390_change_geolocation_database_update_cron',
 			'wc_update_390_db_version',
 		),
-		'4.0.0' => array(
-			'wc_update_product_lookup_tables',
-			'wc_update_400_increase_size_of_column',
-			'wc_update_400_db_version',
-		),
 	);
 
 	/**
@@ -169,7 +162,7 @@ class WC_Install {
 	 * This check is done on all requests and runs if the versions do not match.
 	 */
 	public static function check_version() {
-		if ( ! Constants::is_defined( 'IFRAME_REQUEST' ) && version_compare( get_option( 'woocommerce_version' ), WC()->version, '<' ) ) {
+		if ( ! defined( 'IFRAME_REQUEST' ) && version_compare( get_option( 'woocommerce_version' ), WC()->version, '<' ) ) {
 			self::install();
 			do_action( 'woocommerce_updated' );
 		}
@@ -319,7 +312,7 @@ class WC_Install {
 	 * @since  3.2.0
 	 * @return boolean
 	 */
-	public static function is_new_install() {
+	private static function is_new_install() {
 		$product_count = array_sum( (array) wp_count_posts( 'product' ) );
 
 		return is_null( get_option( 'woocommerce_version', null ) ) || ( 0 === $product_count && -1 === wc_get_page_id( 'shop' ) );
@@ -429,7 +422,7 @@ class WC_Install {
 	 * @return array
 	 */
 	public static function cron_schedules( $schedules ) {
-		$schedules['monthly']     = array(
+		$schedules['monthly'] = array(
 			'interval' => 2635200,
 			'display'  => __( 'Monthly', 'woocommerce' ),
 		);
@@ -462,11 +455,7 @@ class WC_Install {
 			wp_schedule_single_event( time() + ( absint( $held_duration ) * 60 ), 'woocommerce_cancel_unpaid_orders' );
 		}
 
-		// Delay the first run of `woocommerce_cleanup_personal_data` by 10 seconds
-		// so it doesn't occur in the same request. WooCommerce Admin also schedules
-		// a daily cron that gets lost due to a race condition. WC_Privacy's background
-		// processing instance updates the cron schedule from within a cron job.
-		wp_schedule_event( time() + 10, 'daily', 'woocommerce_cleanup_personal_data' );
+		wp_schedule_event( time(), 'daily', 'woocommerce_cleanup_personal_data' );
 		wp_schedule_event( time() + ( 3 * HOUR_IN_SECONDS ), 'daily', 'woocommerce_cleanup_logs' );
 		wp_schedule_event( time() + ( 6 * HOUR_IN_SECONDS ), 'twicedaily', 'woocommerce_cleanup_sessions' );
 		wp_schedule_event( time() + MINUTE_IN_SECONDS, 'fifteendays', 'woocommerce_geoip_updater' );
@@ -906,16 +895,14 @@ CREATE TABLE {$wpdb->prefix}wc_product_meta_lookup (
   `sku` varchar(100) NULL default '',
   `virtual` tinyint(1) NULL default 0,
   `downloadable` tinyint(1) NULL default 0,
-  `min_price` decimal(19,4) NULL default NULL,
-  `max_price` decimal(19,4) NULL default NULL,
+  `min_price` decimal(10,2) NULL default NULL,
+  `max_price` decimal(10,2) NULL default NULL,
   `onsale` tinyint(1) NULL default 0,
   `stock_quantity` double NULL default NULL,
   `stock_status` varchar(100) NULL default 'instock',
   `rating_count` bigint(20) NULL default 0,
   `average_rating` decimal(3,2) NULL default 0.00,
   `total_sales` bigint(20) NULL default 0,
-  `tax_status` varchar(100) NULL default 'taxable',
-  `tax_class` varchar(100) NULL default '',
   PRIMARY KEY  (`product_id`),
   KEY `virtual` (`virtual`),
   KEY `downloadable` (`downloadable`),

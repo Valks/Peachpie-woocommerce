@@ -97,7 +97,7 @@ if ( ! function_exists( __NAMESPACE__ . '\autoloader' ) ) {
 						esc_html( $class_name ),
 						sprintf(
 							/* translators: %s Name of a PHP Class */
-							esc_html__( 'Not all plugins have loaded yet but we requested the class %s', 'woocommerce' ),
+							esc_html__( 'Not all plugins have loaded yet but we requested the class %s', 'jetpack' ),
 							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							$class_name
 						),
@@ -122,7 +122,7 @@ if ( ! function_exists( __NAMESPACE__ . '\autoloader' ) ) {
 /**
  * Prepare all the classes for autoloading.
  */
-function enqueue_packages_931cfc0a3c576f1fac09d1743c74a9d9() {
+function enqueue_packages_e65fa8774e4d9bd6938c1e1e02ac9992() {
 	$class_map = require_once dirname( __FILE__ ) . '/composer/autoload_classmap_package.php';
 	foreach ( $class_map as $class_name => $class_info ) {
 		enqueue_package_class( $class_name, $class_info['version'], $class_info['path'] );
@@ -141,4 +141,4 @@ function enqueue_packages_931cfc0a3c576f1fac09d1743c74a9d9() {
 		}
 	}
 }
-enqueue_packages_931cfc0a3c576f1fac09d1743c74a9d9();
+enqueue_packages_e65fa8774e4d9bd6938c1e1e02ac9992();

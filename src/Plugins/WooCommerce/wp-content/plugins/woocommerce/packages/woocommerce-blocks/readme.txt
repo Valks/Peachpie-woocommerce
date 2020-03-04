@@ -4,7 +4,7 @@ Tags: gutenberg, woocommerce, woo commerce, products, blocks, woocommerce blocks
 Requires at least: 5.0
 Tested up to: 5.3
 Requires PHP: 5.6
-Stable tag: 2.5.12
+Stable tag: 2.5.11
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -115,13 +115,6 @@ Release and roadmap notes available on the [WooCommerce Developers Blog](https:/
 5. WooCommerce Product Blocks in the block inserter menu
 
 == Changelog ==
-
-= 2.5.12 - 2020-02-05 =
-- Fix ratings appearing as text in the editor instead. #1650
-- Fix error with the All Products block and Internet Explorer 11 when adding products to the cart. #1642
-- bug: Check for instance of WooCommerce and WP_Error before initializing session and cart in `rest_authentication_errors` callback. #1698
-- Fix display of price slider when using RTL languages. #1651
-- Renamed the "all products" align option so it's clear the final element gets alignment, not just buttons. #1659
 
 = 2.5.11 - 2020-01-20 =
 - bug: Fix a javascript error when editing All Products inner blocks "Link to Product Page" option #1593

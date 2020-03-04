@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Blocks
  * Plugin URI: https://github.com/woocommerce/woocommerce-gutenberg-products-block
  * Description: WooCommerce blocks for the Gutenberg editor.
- * Version: 2.5.12
+ * Version: 2.5.11
  * Author: Automattic
  * Author URI: https://woocommerce.com
  * Text Domain:  woo-gutenberg-products-block
@@ -121,7 +121,7 @@ add_action( 'plugins_loaded', array( '\Automattic\WooCommerce\Blocks\Package', '
  * @return string JSON translations.
  */
 function woocommerce_blocks_get_i18n_data_json( $translations, $file, $handle, $domain ) {
-	if ( 'woo-gutenberg-products-block' !== $domain ) {
+	if ( 'woocommerce' !== $domain ) {
 		return $translations;
 	}
 

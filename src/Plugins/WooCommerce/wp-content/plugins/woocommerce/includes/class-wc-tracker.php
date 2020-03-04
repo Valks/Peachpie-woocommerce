@@ -10,8 +10,6 @@
  * @package WooCommerce/Classes
  */
 
-use Automattic\Jetpack\Constants;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -40,7 +38,7 @@ class WC_Tracker {
 	 */
 	public static function send_tracking_data( $override = false ) {
 		// Don't trigger this on AJAX Requests.
-		if ( Constants::is_true( 'DOING_AJAX' ) ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 			return;
 		}
 
@@ -111,7 +109,7 @@ class WC_Tracker {
 		$data['inactive_plugins'] = $all_plugins['inactive_plugins'];
 
 		// Jetpack & WooCommerce Connect.
-		$data['jetpack_version']    = Constants::is_defined( 'JETPACK__VERSION' ) ? Constants::get_constant( 'JETPACK__VERSION' ) : 'none';
+		$data['jetpack_version']    = defined( 'JETPACK__VERSION' ) ? JETPACK__VERSION : 'none';
 		$data['jetpack_connected']  = ( class_exists( 'Jetpack' ) && is_callable( 'Jetpack::is_active' ) && Jetpack::is_active() ) ? 'yes' : 'no';
 		$data['jetpack_is_staging'] = ( class_exists( 'Jetpack' ) && is_callable( 'Jetpack::is_staging_site' ) && Jetpack::is_staging_site() ) ? 'yes' : 'no';
 		$data['connect_installed']  = class_exists( 'WC_Connect_Loader' ) ? 'yes' : 'no';

@@ -1,6 +1,6 @@
 <Project>
     <!-- global properties -->
     <PropertyGroup>
-        <WpDotNetVersion>1.0.0-beta11</WpDotNetVersion>
+        <WpDotNetVersion>1.0.0-beta902</WpDotNetVersion>
     </PropertyGroup>
 </Project>

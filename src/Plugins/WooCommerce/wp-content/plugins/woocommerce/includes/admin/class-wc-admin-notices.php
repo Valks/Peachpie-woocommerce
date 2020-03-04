@@ -6,8 +6,6 @@
  * @version 3.4.0
  */
 
-use Automattic\Jetpack\Constants;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -36,9 +34,9 @@ class WC_Admin_Notices {
 		'regenerating_thumbnails'      => 'regenerating_thumbnails_notice',
 		'regenerating_lookup_table'    => 'regenerating_lookup_table_notice',
 		'no_secure_connection'         => 'secure_connection_notice',
+		'wc_admin'                     => 'wc_admin_feature_plugin_notice',
 		WC_PHP_MIN_REQUIREMENTS_NOTICE => 'wp_php_min_requirements_notice',
 		'maxmind_license_key'          => 'maxmind_missing_license_key_notice',
-		'redirect_download_method'     => 'redirect_download_method_notice',
 	);
 
 	/**
@@ -49,14 +47,8 @@ class WC_Admin_Notices {
 
 		add_action( 'switch_theme', array( __CLASS__, 'reset_admin_notices' ) );
 		add_action( 'woocommerce_installed', array( __CLASS__, 'reset_admin_notices' ) );
-		add_action( 'wp_loaded', array( __CLASS__, 'add_redirect_download_method_notice' ) );
 		add_action( 'wp_loaded', array( __CLASS__, 'hide_notices' ) );
-		// @TODO: This prevents Action Scheduler async jobs from storing empty list of notices during WC installation.
-		// That could lead to OBW not starting and 'Run setup wizard' notice not appearing in WP admin, which we want
-		// to avoid.
-		if ( ! WC_Install::is_new_install() || ! wc_is_running_from_async_action_scheduler() ) {
-			add_action( 'shutdown', array( __CLASS__, 'store_notices' ) );
-		}
+		add_action( 'shutdown', array( __CLASS__, 'store_notices' ) );
 
 		if ( current_user_can( 'manage_woocommerce' ) ) {
 			add_action( 'admin_print_styles', array( __CLASS__, 'add_notices' ) );
@@ -93,6 +85,7 @@ class WC_Admin_Notices {
 		if ( ! self::is_ssl() ) {
 			self::add_notice( 'no_secure_connection' );
 		}
+		self::add_wc_admin_feature_plugin_notice();
 		self::add_notice( 'template_files' );
 		self::add_min_version_notice();
 		self::add_maxmind_missing_license_key_notice();
@@ -173,7 +166,7 @@ class WC_Admin_Notices {
 			return;
 		}
 
-		wp_enqueue_style( 'woocommerce-activation', plugins_url( '/assets/css/activation.css', WC_PLUGIN_FILE ), array(), Constants::get_constant( 'WC_VERSION' ) );
+		wp_enqueue_style( 'woocommerce-activation', plugins_url( '/assets/css/activation.css', WC_PLUGIN_FILE ), array(), WC_VERSION );
 
 		// Add RTL support.
 		wp_style_add_data( 'woocommerce-activation', 'rtl', 'replace' );
@@ -354,6 +347,34 @@ class WC_Admin_Notices {
 		include dirname( __FILE__ ) . '/views/html-notice-regenerating-lookup-table.php';
 	}
 
+
+	/**
+	 * If on WordPress 5.0 or greater, inform users of WooCommerce Admin feature plugin.
+	 *
+	 * @since 3.6.4
+	 * @todo  Remove this notice and associated code once the feature plugin has been merged into core.
+	 */
+	public static function add_wc_admin_feature_plugin_notice() {
+		if ( version_compare( get_bloginfo( 'version' ), '5.0', '>=' ) ) {
+			self::add_notice( 'wc_admin' );
+		}
+	}
+
+	/**
+	 * Notice to try WooCommerce Admin
+	 *
+	 * @since 3.6.4
+	 * @todo  Remove this notice and associated code once the feature plugin has been merged into core.
+	 */
+	public static function wc_admin_feature_plugin_notice() {
+		if ( get_user_meta( get_current_user_id(), 'dismissed_wc_admin_notice', true ) || self::is_plugin_active( 'woocommerce-admin/woocommerce-admin.php' ) ) {
+			self::remove_notice( 'wc_admin' );
+			return;
+		}
+
+		include dirname( __FILE__ ) . '/views/html-notice-wc-admin.php';
+	}
+
 	/**
 	 * Add notice about minimum PHP and WordPress requirement.
 	 *
@@ -424,18 +445,6 @@ class WC_Admin_Notices {
 		$integration_options = get_option( 'woocommerce_maxmind_geolocation_settings' );
 		if ( empty( $integration_options['license_key'] ) ) {
 			self::add_notice( 'maxmind_license_key' );
-
-		}
-	}
-
-	/**
-	 *  Add notice about Redirect-only download method, nudging user to switch to a different method instead.
-	 */
-	public static function add_redirect_download_method_notice() {
-		if ( 'redirect' === get_option( 'woocommerce_file_download_method' ) ) {
-			self::add_notice( 'redirect_download_method' );
-		} else {
-			self::remove_notice( 'redirect_download_method' );
 		}
 	}
 
@@ -454,20 +463,6 @@ class WC_Admin_Notices {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-notice-maxmind-license-key.php';
-	}
-
-	/**
-	 * Notice about Redirect-Only download method.
-	 *
-	 * @since 4.0
-	 */
-	public static function redirect_download_method_notice() {
-		if ( apply_filters( 'woocommerce_hide_redirect_method_nag', get_user_meta( get_current_user_id(), 'dismissed_redirect_download_method_notice', true ) ) ) {
-			self::remove_notice( 'redirect_download_method' );
-			return;
-		}
-
-		include dirname( __FILE__ ) . '/views/html-notice-redirect-only-download.php';
 	}
 
 	/**
